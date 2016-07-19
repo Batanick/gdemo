@@ -17,6 +17,8 @@ if(NOT OPENGL_FOUND)
     message(ERROR " OPENGL not found!")
 endif(NOT OPENGL_FOUND)
 
+find_package(GLEW REQUIRED)
+
 add_subdirectory(lib/glfw-3.2)
 include_directories(lib/glfw-3.2/include)
 
@@ -31,6 +33,7 @@ add_executable(gdemo ${SOURCE_FILES})
 #file(INSTALL shaders DESTINATION ./)
 
 #target_link_libraries(pong ${ASSIMP_LIB})
+target_link_libraries(gdemo ${GLEW_LIBRARIES})
 target_link_libraries(gdemo ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
 target_link_libraries(gdemo glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES})
 
