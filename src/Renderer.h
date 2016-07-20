@@ -11,7 +11,7 @@ public:
 
     bool initShaders();
 
-    void doRender(const float &ratio);
+    void doRender(const float &ratio, const float timeDelta);
 
 private :
     struct Mesh {
@@ -24,10 +24,10 @@ private :
 
     void draw(const std::shared_ptr<Model> &model);
 
-    unsigned int shaderParam(const std::string &name);
+    int shaderParam(const std::string &name, bool uniform);
 
     unsigned int shaderId = 0;
-    std::map<std::string, unsigned int> shaderParamsCache;
+    std::map<std::string, int> shaderParamsCache;
     std::vector<Mesh> meshes;
 };
 
