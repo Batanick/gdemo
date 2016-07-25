@@ -30,7 +30,7 @@ add_definitions(-DGLM_FORCE_RADIANS)
 add_executable(gdemo ${SOURCE_FILES})
 
 #static assets
-#file(INSTALL shaders DESTINATION ./)
+file(COPY shaders DESTINATION ./)
 
 #target_link_libraries(pong ${ASSIMP_LIB})
 target_link_libraries(gdemo ${GLEW_LIBRARIES})

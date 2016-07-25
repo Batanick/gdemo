@@ -5,7 +5,7 @@
 #include "logging.h"
 
 static void error_callback(int error, const char *description) {
-    LOG("Error: %s\n", description);
+    LOG("Error %d: %s\n", error, description);
 }
 
 int main(void) {
@@ -28,13 +28,16 @@ int main(void) {
     glfwMakeContextCurrent(window);
 
     const std::shared_ptr<Renderer> &renderer = std::make_shared<Renderer>();
-    renderer->init();
+    if (!renderer->init()) {
+        return 1;
+    }
 
     int width = 0, height = 0;
     double lastProcessTime = glfwGetTime();
     double timeDelta = 0.0, currentTime = 0.0;
 
     // placing cursor to init location
+    glfwGetFramebufferSize(window, &width, &height);
     glfwSetCursorPos(window, width / 2, height / 2);
 
     /* Loop until the user closes the window */

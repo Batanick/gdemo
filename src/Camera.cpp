@@ -6,6 +6,7 @@
 
 static const float CAMERA_MOVE_SPEED = 10.0f;
 static const float CAMERA_ROTATION_SPEED = 0.005f;
+static const float PI_2 = 3.1415926f / 2;
 
 Camera::Camera() {
     horizontalAngle = 0.0f;
@@ -25,6 +26,9 @@ void Camera::onBeforeRender(GLFWwindow *const window, double deltaTime) {
 
     horizontalAngle += CAMERA_ROTATION_SPEED * float(windowWidth / 2 - mouseXPos);
     verticalAngle += CAMERA_ROTATION_SPEED * float(windowHeight / 2 - mouseYPos);
+
+    verticalAngle = std::max(-PI_2, verticalAngle);
+    verticalAngle = std::min(PI_2, verticalAngle);
 
     const glm::vec3 direction = getDirection();
     const glm::vec3 right = getRight();
@@ -60,7 +64,6 @@ glm::vec3 Camera::getUp() {
 }
 
 glm::vec3 Camera::getDirection() {
-    LOG("%f:%f", horizontalAngle, verticalAngle);
     return glm::vec3(
             cos(verticalAngle) * sin(horizontalAngle),
             sin(verticalAngle),

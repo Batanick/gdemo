@@ -11,54 +11,12 @@
 #include "logging.h"
 #include "sceneBuilding.h"
 
-static const char *vertex_shader_text =
-        "uniform mat4 MVP;\n"
-                "attribute vec3 vCol;\n"
-                "attribute vec3 vPos;\n"
-                "varying vec3 color;\n"
-                "void main()\n"
-                "{\n"
-                "    gl_Position = MVP * vec4(vPos, 1.0);\n"
-                "    color = vCol;\n"
-                "}\n";
-
-static const char *fragment_shader_text =
-        "varying vec3 color;\n"
-                "void main()\n"
-                "{\n"
-                "    gl_FragColor = vec4(color, 1.0);\n"
-                "}\n";
-
-
-void printLog(GLuint obj);
-
 bool Renderer::init() {
     VERIFY(glewInit() == GLEW_OK, "Unable to initialize glew", return false);
-    VERIFY(initShaders(), "Unable to initialize shaders", return false;)
+    VERIFY(shaderManager->init(), "Unable to initialize shaders", return false;)
 
     scene = buildScene();
     loadScene();
-
-    return true;
-}
-
-bool Renderer::initShaders() {
-    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
-    glCompileShader(vertex_shader);
-    printLog(vertex_shader);
-
-    const GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
-    glCompileShader(fragment_shader);
-    printLog(fragment_shader);
-
-    shaderId = glCreateProgram();
-    VERIFY(shaderId != 0, "Unable to create shader", return false)
-    glAttachShader(shaderId, vertex_shader);
-    glAttachShader(shaderId, fragment_shader);
-    glLinkProgram(shaderId);
-    printLog(shaderId);
 
     return true;
 }
@@ -79,11 +37,11 @@ void Renderer::loadScene() {
 }
 
 void Renderer::doRender(const float &ratio, const float timeDelta) {
-    glUseProgram(shaderId);
+    glUseProgram(shaderManager->getShaderId());
 
-    const int mvpLoc = uniformParam("MVP");
-    const unsigned int colLoc = attribParam("vCol");
-    const unsigned int posLoc = attribParam("vPos");
+    const int mvpLoc = shaderManager->uniformParam("MVP");
+    const unsigned int colLoc = shaderManager->attribParam("vCol");
+    const unsigned int posLoc = shaderManager->attribParam("vPos");
 
     const glm::vec3 &cameraPos = camera->getPosition();
     const glm::vec3 &cameraDir = camera->getDirection();
@@ -107,50 +65,3 @@ void Renderer::doRender(const float &ratio, const float timeDelta) {
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 }
-
-void Renderer::draw(const std::shared_ptr<Model> &model) {
-
-}
-
-unsigned int Renderer::attribParam(const std::string &name) {
-    auto result = attribParamsCache.find(name);
-    if (result != attribParamsCache.end()) {
-        return result->second;
-    }
-
-    GLuint id = (GLuint) glGetAttribLocation(shaderId, name.c_str());
-    attribParamsCache[name] = id;
-    return id;
-}
-
-int Renderer::uniformParam(const std::string &name) {
-    auto result = uniformParamsCache.find(name);
-    if (result != uniformParamsCache.end()) {
-        return result->second;
-    }
-
-    GLint id = glGetUniformLocation(shaderId, name.c_str());
-    uniformParamsCache[name] = id;
-    return id;
-}
-
-void printLog(GLuint obj) {
-    int infologLength = 0;
-    int maxLength = 1024;
-
-    if (glIsShader(obj))
-        glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &maxLength);
-    else
-        glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &maxLength);
-
-    char infoLog[128 * 1024];
-
-    if (glIsShader(obj))
-        glGetShaderInfoLog(obj, maxLength, &infologLength, infoLog);
-    else
-        glGetProgramInfoLog(obj, maxLength, &infologLength, infoLog);
-
-    if (infologLength > 0) LOG("%s\n", infoLog);
-}
-
-
