@@ -4,8 +4,7 @@
 #include "Renderer.h"
 #include "logging.h"
 
-static void error_callback(int error, const char* description)
-{
+static void error_callback(int error, const char *description) {
     LOG("Error: %s\n", description);
 }
 
@@ -35,6 +34,9 @@ int main(void) {
     double lastProcessTime = glfwGetTime();
     double timeDelta = 0.0, currentTime = 0.0;
 
+    // placing cursor to init location
+    glfwSetCursorPos(window, width / 2, height / 2);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         currentTime = glfwGetTime();
@@ -45,7 +47,9 @@ int main(void) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+        renderer->getCamera()->onBeforeRender(window, timeDelta);
         glfwGetFramebufferSize(window, &width, &height);
+        glfwSetCursorPos(window, width / 2, height / 2);
 
         renderer->doRender(width / (float) height, (float) timeDelta);
 

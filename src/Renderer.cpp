@@ -4,11 +4,12 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Renderer.h"
 
 #include "logging.h"
-#include "Renderer.h"
 #include "sceneBuilding.h"
-#include "../lib/glfw-3.2/deps/linmath.h"
 
 static const char *vertex_shader_text =
         "uniform mat4 MVP;\n"
@@ -17,9 +18,10 @@ static const char *vertex_shader_text =
                 "varying vec3 color;\n"
                 "void main()\n"
                 "{\n"
-                "    gl_Position = vec4(vPos, 1.0);\n"
+                "    gl_Position = MVP * vec4(vPos, 1.0);\n"
                 "    color = vCol;\n"
                 "}\n";
+
 static const char *fragment_shader_text =
         "varying vec3 color;\n"
                 "void main()\n"
@@ -79,17 +81,23 @@ void Renderer::loadScene() {
 void Renderer::doRender(const float &ratio, const float timeDelta) {
     glUseProgram(shaderId);
 
-    const int mvpLoc = shaderParam("MVP", true);
-    const int colLoc = shaderParam("vCol", false);
-    const int posLoc = shaderParam("vPos", false);
+    const int mvpLoc = uniformParam("MVP");
+    const unsigned int colLoc = attribParam("vCol");
+    const unsigned int posLoc = attribParam("vPos");
 
-    glm::mat4 model;
-    glm::mat4 projection;
-    glm::mat4 view;
+    const glm::vec3 &cameraPos = camera->getPosition();
+    const glm::vec3 &cameraDir = camera->getDirection();
+    const glm::vec3 &cameraUp = camera->getUp();
 
-    glm::mat4 mvp = projection * view * projection;
+    const glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp);
+    const glm::mat4 projection = glm::perspective<float>(45.0f, ratio, 0.01f, 5000.0f);
 
     for (Mesh &mesh : meshes) {
+        const glm::mat4 model;
+        const glm::mat4 mvp = projection * view * model;
+
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexBuffer);
+
         glEnableVertexAttribArray(posLoc);
         glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void *) 0);
         glEnableVertexAttribArray(colLoc);
@@ -98,23 +106,32 @@ void Renderer::doRender(const float &ratio, const float timeDelta) {
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, (const GLfloat *) &mvp);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
-
 }
 
 void Renderer::draw(const std::shared_ptr<Model> &model) {
 
 }
 
-int Renderer::shaderParam(const std::string &name, bool uniform) {
-    auto result = shaderParamsCache.find(name);
-    if (result != shaderParamsCache.end()) {
+unsigned int Renderer::attribParam(const std::string &name) {
+    auto result = attribParamsCache.find(name);
+    if (result != attribParamsCache.end()) {
         return result->second;
     }
 
-    const GLint location = uniform ? glGetUniformLocation(shaderId, name.c_str())
-                                   : glGetAttribLocation(shaderId, name.c_str());
-    shaderParamsCache[name] = location;
-    return location;
+    GLuint id = (GLuint) glGetAttribLocation(shaderId, name.c_str());
+    attribParamsCache[name] = id;
+    return id;
+}
+
+int Renderer::uniformParam(const std::string &name) {
+    auto result = uniformParamsCache.find(name);
+    if (result != uniformParamsCache.end()) {
+        return result->second;
+    }
+
+    GLint id = glGetUniformLocation(shaderId, name.c_str());
+    uniformParamsCache[name] = id;
+    return id;
 }
 
 void printLog(GLuint obj) {

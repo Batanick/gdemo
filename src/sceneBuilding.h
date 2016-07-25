@@ -21,8 +21,8 @@ glm::vec3 clr(const float &r, const float &g, const float &b) {
 std::shared_ptr<Model> testTriangle() {
     auto model = std::make_shared<Model>();
 
-    model->add(pos(-0.6f, -0.4f, 0.0f), clr(1.f, 0.f, 0.f));
     model->add(pos(0.6f, -0.4f, 0.0f), clr(0.f, 1.f, 0.f));
+    model->add(pos(-0.6f, -0.4f, 0.0f), clr(1.f, 0.f, 0.f));
     model->add(pos(0.f, 0.6f, 0.0f), clr(0.f, 0.f, 1.f));
 
     return model;
