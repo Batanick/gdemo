@@ -1,0 +1,3 @@
+# gdemo
+
+a humble attempt to make a nice graphics demo the right way... this time... 
