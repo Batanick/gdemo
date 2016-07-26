@@ -22,12 +22,16 @@ glm::vec3 clr(const float &r, const float &g, const float &b) {
     return glm::vec3(r, g, b);
 }
 
+glm::vec3 normal(const float &x, const float &y, const float &z) {
+    return glm::vec3(x, y, z);
+}
+
 std::shared_ptr<Model> testTriangle() {
     auto model = std::make_shared<Model>();
 
-    model->add(pos(0.6f, -0.4f, 0.0f), clr(0.f, 1.f, 0.f));
-    model->add(pos(-0.6f, -0.4f, 0.0f), clr(1.f, 0.f, 0.f));
-    model->add(pos(0.f, 0.6f, 0.0f), clr(0.f, 0.f, 1.f));
+    model->add(pos(0.6f, -0.4f, 0.0f), clr(0.f, 1.f, 0.f), glm::vec3());
+    model->add(pos(-0.6f, -0.4f, 0.0f), clr(1.f, 0.f, 0.f), glm::vec3());
+    model->add(pos(0.f, 0.6f, 0.0f), clr(0.f, 0.f, 1.f), glm::vec3());
 
     model->poly(0, 1, 2);
 
@@ -39,15 +43,15 @@ std::shared_ptr<Model> cube(const float &size, const glm::vec3 &clr) {
     const float hSize = size / 2;
 
 
-    model->add(pos(-hSize, -hSize, hSize), clr);
-    model->add(pos(hSize, -hSize, hSize), clr);
-    model->add(pos(hSize, hSize, hSize), clr);
-    model->add(pos(-hSize, hSize, hSize), clr);
+    model->add(pos(-hSize, -hSize, hSize), clr, glm::vec3());
+    model->add(pos(hSize, -hSize, hSize), clr, glm::vec3());
+    model->add(pos(hSize, hSize, hSize), clr, glm::vec3());
+    model->add(pos(-hSize, hSize, hSize), clr, glm::vec3());
 
-    model->add(pos(-hSize, -hSize, -hSize), clr);
-    model->add(pos(hSize, -hSize, -hSize), clr);
-    model->add(pos(hSize, hSize, -hSize), clr);
-    model->add(pos(-hSize, hSize, -hSize), clr);
+    model->add(pos(-hSize, -hSize, -hSize), clr, glm::vec3());
+    model->add(pos(hSize, -hSize, -hSize), clr, glm::vec3());
+    model->add(pos(hSize, hSize, -hSize), clr, glm::vec3());
+    model->add(pos(-hSize, hSize, -hSize), clr, glm::vec3());
 
     // front
     model->poly(0, 1, 2);

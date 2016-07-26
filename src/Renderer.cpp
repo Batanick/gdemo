@@ -39,7 +39,6 @@ void Renderer::loadScene() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
 
-
         Mesh mesh(vertexBuffer, indexBuffer, (unsigned int) indices.size());
         meshes.push_back(mesh);
     }
@@ -49,8 +48,10 @@ void Renderer::doRender(const float &ratio, const float &) {
     glUseProgram(shaderManager->getShaderId());
 
     const int mvpLoc = shaderManager->uniformParam("MVP");
-    const unsigned int colLoc = shaderManager->attribParam("vCol");
+
+    const unsigned int colLoc = shaderManager->attribParam("vColor");
     const unsigned int posLoc = shaderManager->attribParam("vPos");
+    const unsigned int normLoc = shaderManager->attribParam("vNorm");
 
     const glm::vec3 &cameraPos = camera->getPosition();
     const glm::vec3 &cameraDir = camera->getDirection();
@@ -67,12 +68,13 @@ void Renderer::doRender(const float &ratio, const float &) {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexBuffer());
 
         glEnableVertexAttribArray(posLoc);
-        glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void *) 0);
+        glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void *) 0);
         glEnableVertexAttribArray(colLoc);
-        glVertexAttribPointer(colLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void *) (sizeof(float) * 3));
+        glVertexAttribPointer(colLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void *) (sizeof(float) * 3));
+        glEnableVertexAttribArray(colLoc);
+        glVertexAttribPointer(normLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void *) (sizeof(float) * 6));
 
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, (const GLfloat *) &mvp);
-//        glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, mesh.getElementsSize(), GL_UNSIGNED_SHORT, 0);
     }
 }

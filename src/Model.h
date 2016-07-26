@@ -15,12 +15,16 @@ public:
     struct VertexData {
         glm::vec3 position;
         glm::vec3 diffuse;
+        glm::vec3 normal;
 
-        VertexData(const glm::vec3 &position, const glm::vec3 &diffuse) : position(position), diffuse(diffuse) { }
+        VertexData(const glm::vec3 &position, const glm::vec3 &diffuse, const glm::vec3 &normal) :
+                position(position),
+                diffuse(diffuse),
+                normal(normal) { }
     };
 
-    void add(const glm::vec3 &pos, const glm::vec3 &diffuse) {
-        vertices.push_back(VertexData(pos, diffuse));
+    void add(const glm::vec3 &pos, const glm::vec3 &diffuse, const glm::vec3 &normal) {
+        vertices.push_back(VertexData(pos, diffuse, normal));
     }
 
     void poly(const unsigned short &p1, const unsigned short &p2, const unsigned short &p3) {

@@ -18,8 +18,8 @@ bool ShaderManager::init() {
     std::string vertShader, fragShader;
     VERIFY(loadContent("shaders/shader.vert", vertShader), "Unable to load vertex shader", return false);
     VERIFY(loadContent("shaders/shader.frag", fragShader), "Unable to load fragment shader", return false);
-    const char * vertChars = vertShader.c_str();
-    const char * fragChars = fragShader.c_str();
+    const char *vertChars = vertShader.c_str();
+    const char *fragChars = fragShader.c_str();
 
     GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 
@@ -38,7 +38,9 @@ bool ShaderManager::init() {
     glAttachShader(shaderId, fragment_shader);
     glLinkProgram(shaderId);
 
-    bool success = printLog(shaderId);
+    VERIFY(glGetError() == GL_NO_ERROR, "Error while loading shaders", return false);
+
+    bool success = printLog(shaderId) && printLog(vertex_shader) && printLog(fragment_shader);
 
     return success;
 }
@@ -49,7 +51,12 @@ unsigned int ShaderManager::attribParam(const std::string &name) {
         return result->second;
     }
 
-    GLuint id = (GLuint) glGetAttribLocation(shaderId, name.c_str());
+    const int intLocation = glGetAttribLocation(shaderId, name.c_str());
+    if (intLocation == -1) {
+        LOG("Can't find shader attribute with name: %s", name.c_str())
+        return (unsigned int) -1;
+    }
+    GLuint id = (GLuint) intLocation;
     attribParamsCache[name] = id;
     return id;
 }
@@ -61,6 +68,10 @@ int ShaderManager::uniformParam(const std::string &name) {
     }
 
     GLint id = glGetUniformLocation(shaderId, name.c_str());
+    if (id == -1) {
+        LOG("Can't find shader uniform param with name: %s", name.c_str())
+        return -1;
+    }
     uniformParamsCache[name] = id;
     return id;
 }
@@ -90,6 +101,7 @@ bool printLog(GLuint obj) {
 }
 
 #include <unistd.h>
+
 bool loadContent(const char *path, std::string &result) {
     std::ifstream stream(path);
     if (!stream.is_open()) {
@@ -101,6 +113,7 @@ bool loadContent(const char *path, std::string &result) {
     while (std::getline(stream, line)) {
         result += line + "\n";
     }
+    LOG("Loading shader [%s]: \n%s", path, result.c_str());
 
     return true;
 }
