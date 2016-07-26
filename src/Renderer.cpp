@@ -36,7 +36,7 @@ void Renderer::loadScene() {
     }
 }
 
-void Renderer::doRender(const float &ratio, const float timeDelta) {
+void Renderer::doRender(const float &ratio, const float &) {
     glUseProgram(shaderManager->getShaderId());
 
     const int mvpLoc = shaderManager->uniformParam("MVP");

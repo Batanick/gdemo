@@ -12,7 +12,7 @@ class Renderer {
 public:
     bool init();
 
-    void doRender(const float &ratio, const float timeDelta);
+    void doRender(const float &ratio, const float &timeDelta);
 
     const std::unique_ptr<Camera> &getCamera() const {
         return camera;

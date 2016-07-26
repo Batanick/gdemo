@@ -24,7 +24,7 @@ include_directories(lib/glfw-3.2/include)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Werror")
 add_definitions(-DGLM_FORCE_RADIANS)
 
 add_executable(gdemo ${SOURCE_FILES})
