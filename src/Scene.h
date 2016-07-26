@@ -12,7 +12,6 @@
 
 class Scene {
 public :
-
     void add(const std::shared_ptr<const Model> &model) {
         models.push_back(model);
     }

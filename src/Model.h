@@ -7,6 +7,8 @@
 
 #include <vector>
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/transform.hpp>
 
 class Model {
 public:
@@ -21,12 +23,23 @@ public:
         vertices.push_back(VertexData(pos, diffuse));
     }
 
+    void poly(const unsigned short &p1, const unsigned short &p2, const unsigned short &p3) {
+        indices.push_back(p1);
+        indices.push_back(p2);
+        indices.push_back(p3);
+    }
+
     const std::vector<VertexData> &getVertices() const {
         return vertices;
     }
 
+    const std::vector<unsigned short> &getIndices() const {
+        return indices;
+    }
+
 private:
     std::vector<VertexData> vertices;
+    std::vector<unsigned short> indices;
 };
 
 

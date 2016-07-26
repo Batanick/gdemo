@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "ShaderManager.h"
+#include "Mesh.h"
 
 class Renderer {
 public:
@@ -19,13 +20,9 @@ public:
     }
 
 private :
-    struct Mesh {
-        unsigned int vertexBuffer = 0;
-    };
-
     std::unique_ptr<Scene> scene;
-    std::unique_ptr<Camera> camera {new Camera()};
-    std::unique_ptr<ShaderManager> shaderManager {new ShaderManager()};
+    std::unique_ptr<Camera> camera{new Camera()};
+    std::unique_ptr<ShaderManager> shaderManager{new ShaderManager()};
 
     void loadScene();
 

@@ -18,20 +18,29 @@ bool Renderer::init() {
     scene = buildScene();
     loadScene();
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
     return true;
 }
 
 void Renderer::loadScene() {
     for (auto model : scene->getModels()) {
-        GLuint bufferId;
+        GLuint vertexBuffer, indexBuffer;
 
-        const std::vector<Model::VertexData> &vertices = model->getVertices();
-        glGenBuffers(1, &bufferId);
-        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+        auto &vertices = model->getVertices();
+        glGenBuffers(1, &vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Model::VertexData), &vertices[0], GL_STATIC_DRAW);
 
-        Mesh mesh;
-        mesh.vertexBuffer = bufferId;
+        auto &indices = model->getIndices();
+        glGenBuffers(1, &indexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
+
+
+        Mesh mesh(vertexBuffer, indexBuffer, (unsigned int) indices.size());
         meshes.push_back(mesh);
     }
 }
@@ -51,10 +60,11 @@ void Renderer::doRender(const float &ratio, const float &) {
     const glm::mat4 projection = glm::perspective<float>(45.0f, ratio, 0.01f, 5000.0f);
 
     for (Mesh &mesh : meshes) {
-        const glm::mat4 model;
+        const glm::mat4 model = mesh.getTransform();
         const glm::mat4 mvp = projection * view * model;
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexBuffer());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexBuffer());
 
         glEnableVertexAttribArray(posLoc);
         glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void *) 0);
@@ -62,6 +72,7 @@ void Renderer::doRender(const float &ratio, const float &) {
         glVertexAttribPointer(colLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void *) (sizeof(float) * 3));
 
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, (const GLfloat *) &mvp);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+//        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, mesh.getElementsSize(), GL_UNSIGNED_SHORT, 0);
     }
 }
