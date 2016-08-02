@@ -27,6 +27,10 @@ public:
         vertices.push_back(VertexData(pos, diffuse, normal));
     }
 
+    void add(const glm::vec3 &pos, const glm::vec3 &diffuse) {
+        vertices.push_back(VertexData(pos, diffuse, glm::normalize(pos)));
+    }
+
     void poly(const unsigned short &p1, const unsigned short &p2, const unsigned short &p3) {
         indices.push_back(p1);
         indices.push_back(p2);

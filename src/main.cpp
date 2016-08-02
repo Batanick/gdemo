@@ -49,6 +49,7 @@ int main(void) {
         glViewport(0, 0, width, height);
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.0f, 0.0f, 0.3f, 0.0f);
 
         renderer->getCamera()->onBeforeRender(window, timeDelta);
         glfwGetFramebufferSize(window, &width, &height);

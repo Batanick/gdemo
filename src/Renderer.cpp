@@ -48,6 +48,9 @@ void Renderer::doRender(const float &ratio, const float &) {
     glUseProgram(shaderManager->getShaderId());
 
     const int mvpLoc = shaderManager->uniformParam("MVP");
+    const int viewLoc = shaderManager->uniformParam("view");
+    const int projectionLoc = shaderManager->uniformParam("projection");
+    const int lightDirViewLoc = shaderManager->uniformParam("lightDirView");
 
     const unsigned int colLoc = shaderManager->attribParam("vColor");
     const unsigned int posLoc = shaderManager->attribParam("vPos");
@@ -60,6 +63,9 @@ void Renderer::doRender(const float &ratio, const float &) {
     const glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp);
     const glm::mat4 projection = glm::perspective<float>(45.0f, ratio, 0.01f, 5000.0f);
 
+    const glm::vec4 lightDirView = view * glm::vec4(lightDir.x, lightDir.y, lightDir.z, 0.0f);
+    const glm::vec3 lightDirViewNorm = glm::normalize(glm::vec3(lightDirView));
+
     for (Mesh &mesh : meshes) {
         const glm::mat4 model = mesh.getTransform();
         const glm::mat4 mvp = projection * view * model;
@@ -71,10 +77,14 @@ void Renderer::doRender(const float &ratio, const float &) {
         glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void *) 0);
         glEnableVertexAttribArray(colLoc);
         glVertexAttribPointer(colLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void *) (sizeof(float) * 3));
-        glEnableVertexAttribArray(colLoc);
+        glEnableVertexAttribArray(normLoc);
         glVertexAttribPointer(normLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void *) (sizeof(float) * 6));
 
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, (const GLfloat *) &mvp);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat *) &view);
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat *) &projection);
+        glUniform3fv(lightDirViewLoc, 1, (const GLfloat *) &lightDirViewNorm);
+
         glDrawElements(GL_TRIANGLES, mesh.getElementsSize(), GL_UNSIGNED_SHORT, 0);
     }
 }

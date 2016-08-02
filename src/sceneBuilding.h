@@ -42,16 +42,15 @@ std::shared_ptr<Model> cube(const float &size, const glm::vec3 &clr) {
     auto model = std::make_shared<Model>();
     const float hSize = size / 2;
 
+    model->add(pos(-hSize, -hSize, hSize), clr);
+    model->add(pos(hSize, -hSize, hSize), clr);
+    model->add(pos(hSize, hSize, hSize), clr);
+    model->add(pos(-hSize, hSize, hSize), clr);
 
-    model->add(pos(-hSize, -hSize, hSize), clr, glm::vec3());
-    model->add(pos(hSize, -hSize, hSize), clr, glm::vec3());
-    model->add(pos(hSize, hSize, hSize), clr, glm::vec3());
-    model->add(pos(-hSize, hSize, hSize), clr, glm::vec3());
-
-    model->add(pos(-hSize, -hSize, -hSize), clr, glm::vec3());
-    model->add(pos(hSize, -hSize, -hSize), clr, glm::vec3());
-    model->add(pos(hSize, hSize, -hSize), clr, glm::vec3());
-    model->add(pos(-hSize, hSize, -hSize), clr, glm::vec3());
+    model->add(pos(-hSize, -hSize, -hSize), clr);
+    model->add(pos(hSize, -hSize, -hSize), clr);
+    model->add(pos(hSize, hSize, -hSize), clr);
+    model->add(pos(-hSize, hSize, -hSize), clr);
 
     // front
     model->poly(0, 1, 2);
@@ -75,10 +74,45 @@ std::shared_ptr<Model> cube(const float &size, const glm::vec3 &clr) {
     return model;
 }
 
+std::shared_ptr<Model> box(const float &size, const glm::vec3 &clr) {
+    auto model = std::make_shared<Model>();
+    const float hSize = size / 2;
+
+    model->add(pos(-hSize, -hSize, hSize), clr);
+    model->add(pos(hSize, -hSize, hSize), clr);
+    model->add(pos(hSize, hSize, hSize), clr);
+    model->add(pos(-hSize, hSize, hSize), clr);
+
+    model->add(pos(-hSize, -hSize, -hSize), clr);
+    model->add(pos(hSize, -hSize, -hSize), clr);
+    model->add(pos(hSize, hSize, -hSize), clr);
+    model->add(pos(-hSize, hSize, -hSize), clr);
+
+    // front
+    model->poly(1, 0, 2);
+    model->poly(3, 2, 0);
+    // top
+    model->poly(5, 1, 6);
+    model->poly(2, 6, 1);
+    // back
+    model->poly(6, 7, 5);
+    model->poly(4, 5, 7);
+    // bottom
+    model->poly(0, 4, 3);
+    model->poly(7, 3, 4);
+    // left
+    model->poly(5, 4, 1);
+    model->poly(0, 1, 4);
+    // right
+    model->poly(2, 3, 6);
+    model->poly(7, 6, 3);
+
+    return model;
+}
+
 std::unique_ptr<Scene> buildScene() {
     auto scene = std::unique_ptr<Scene>(new Scene());
 
-    scene->add(testTriangle());
     scene->add(cube(0.3f, GREEN));
 
     return scene;
