@@ -16,13 +16,13 @@ void main()
 {
     vec3 normal = normalize(fNormalView);
 
-    float lambertian = max(dot(lightDirView, normal), 0.0);
+    float lambertian = max(dot(-lightDirView, normal), 0.0);
     float specular = 0.0;
 
     if(lambertian > 0.0) {
         vec3 viewDir = normalize(-posView);
 
-        vec3 halfDir = normalize(lightDirView + viewDir);
+        vec3 halfDir = normalize(-lightDirView + viewDir);
         float specAngle = max(dot(halfDir, normal), 0.0);
         specular = pow(specAngle, shininess);
     }

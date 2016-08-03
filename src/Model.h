@@ -24,7 +24,7 @@ public:
     };
 
     void add(const glm::vec3 &pos, const glm::vec3 &diffuse, const glm::vec3 &normal) {
-        vertices.push_back(VertexData(pos, diffuse, normal));
+        vertices.push_back(VertexData(pos, diffuse, glm::normalize(normal)));
     }
 
     void add(const glm::vec3 &pos, const glm::vec3 &diffuse) {

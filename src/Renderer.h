@@ -27,7 +27,7 @@ private :
     void loadScene();
 
     std::vector<Mesh> meshes;
-    glm::vec3 lightDir{1.0f, 1.0f, 1.0f};
+    glm::vec3 lightDir{1.0f, -1.0f, 1.0f};
 };
 
 

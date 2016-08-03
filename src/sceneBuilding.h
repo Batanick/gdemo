@@ -13,6 +13,7 @@
 glm::vec3 GREEN(0.0f, 1.0f, 0.0f);
 glm::vec3 RED(1.0f, 0.0f, 0.0f);
 glm::vec3 BLUE(0.0f, 0.0f, 1.0f);
+glm::vec3 GREY(0.5f, 0.5f, 0.5f);
 
 glm::vec3 pos(const float &x, const float &y, const float &z) {
     return glm::vec3(x, y, z);
@@ -23,7 +24,7 @@ glm::vec3 clr(const float &r, const float &g, const float &b) {
 }
 
 glm::vec3 normal(const float &x, const float &y, const float &z) {
-    return glm::vec3(x, y, z);
+    return glm::normalize(glm::vec3(x, y, z));
 }
 
 std::shared_ptr<Model> testTriangle() {
@@ -78,15 +79,15 @@ std::shared_ptr<Model> box(const float &size, const glm::vec3 &clr) {
     auto model = std::make_shared<Model>();
     const float hSize = size / 2;
 
-    model->add(pos(-hSize, -hSize, hSize), clr);
-    model->add(pos(hSize, -hSize, hSize), clr);
-    model->add(pos(hSize, hSize, hSize), clr);
-    model->add(pos(-hSize, hSize, hSize), clr);
+    model->add(pos(-hSize, -hSize, hSize), clr, normal(hSize, hSize, -hSize));
+    model->add(pos(hSize, -hSize, hSize), clr, normal(-hSize, hSize, -hSize));
+    model->add(pos(hSize, hSize, hSize), clr, normal(-hSize, -hSize, -hSize));
+    model->add(pos(-hSize, hSize, hSize), clr, normal(hSize, -hSize, -hSize));
 
-    model->add(pos(-hSize, -hSize, -hSize), clr);
-    model->add(pos(hSize, -hSize, -hSize), clr);
-    model->add(pos(hSize, hSize, -hSize), clr);
-    model->add(pos(-hSize, hSize, -hSize), clr);
+    model->add(pos(-hSize, -hSize, -hSize), clr, normal(hSize, hSize, hSize));
+    model->add(pos(hSize, -hSize, -hSize), clr, normal(-hSize, hSize, hSize));
+    model->add(pos(hSize, hSize, -hSize), clr, normal(-hSize, -hSize, hSize));
+    model->add(pos(-hSize, hSize, -hSize), clr, normal(hSize, -hSize, hSize));
 
     // front
     model->poly(1, 0, 2);
@@ -113,6 +114,7 @@ std::shared_ptr<Model> box(const float &size, const glm::vec3 &clr) {
 std::unique_ptr<Scene> buildScene() {
     auto scene = std::unique_ptr<Scene>(new Scene());
 
+    scene->add(box(10.0, GREY));
     scene->add(cube(0.3f, GREEN));
 
     return scene;
