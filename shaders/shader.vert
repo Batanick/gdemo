@@ -1,6 +1,7 @@
 #version 330 core
 
 uniform mat4 MVP;
+uniform mat4 model;
 uniform mat4 view;
 //uniform mat4 projection;
 
@@ -20,5 +21,5 @@ void main()
 
     posView = (view * gl_Position).xyz;
     fColor = vColor;
-    fNormalView = (view * vec4(vNorm, 0.0)).xyz;
+    fNormalView = (view * model* vec4(vNorm, 0.0)).xyz;
 }

@@ -1,6 +1,7 @@
 #version 330 core
 
 uniform vec3 lightDirView;
+uniform mat4 view;
 
 in vec3 fColor;
 in vec3 fNormalView;

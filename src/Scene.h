@@ -12,8 +12,9 @@
 
 class Scene {
 public :
-    void add(const std::shared_ptr<const Model> &model) {
+    std::shared_ptr<Model> add(const std::shared_ptr<Model> &model) {
         models.push_back(model);
+        return model;
     }
 
     const std::vector<std::shared_ptr<const Model>> &getModels() const {

@@ -10,6 +10,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include "MoveController.h"
+
 class Model {
 public:
     struct VertexData {
@@ -45,9 +47,19 @@ public:
         return indices;
     }
 
+    const std::vector<std::shared_ptr<MoveController>> &getMoveControllers() const {
+        return moveControllers;
+    }
+
+    void withRotation(const glm::vec3 &axis, const float &speed) {
+        moveControllers.push_back(rotationController(axis, speed));
+    }
+
 private:
     std::vector<VertexData> vertices;
     std::vector<unsigned short> indices;
+
+    std::vector<std::shared_ptr<MoveController>> moveControllers;
 };
 
 

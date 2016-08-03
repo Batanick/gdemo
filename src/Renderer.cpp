@@ -40,14 +40,16 @@ void Renderer::loadScene() {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
 
         Mesh mesh(vertexBuffer, indexBuffer, (unsigned int) indices.size());
+        mesh.setMoveControllers(model->getMoveControllers());
         meshes.push_back(mesh);
     }
 }
 
-void Renderer::doRender(const float &ratio, const float &) {
+void Renderer::doRender(const float &ratio, const float &timeDelta) {
     glUseProgram(shaderManager->getShaderId());
 
     const int mvpLoc = shaderManager->uniformParam("MVP");
+    const int modelLoc = shaderManager->uniformParam("model");
     const int viewLoc = shaderManager->uniformParam("view");
 //    const int projectionLoc = shaderManager->uniformParam("projection");
     const int lightDirViewLoc = shaderManager->uniformParam("lightDirView");
@@ -67,7 +69,7 @@ void Renderer::doRender(const float &ratio, const float &) {
     const glm::vec3 lightDirViewNorm = glm::normalize(glm::vec3(lightDirView));
 
     for (Mesh &mesh : meshes) {
-        const glm::mat4 model = mesh.getTransform();
+        const glm::mat4 model = mesh.updateTransform(timeDelta);
         const glm::mat4 mvp = projection * view * model;
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexBuffer());
@@ -82,6 +84,7 @@ void Renderer::doRender(const float &ratio, const float &) {
 
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, (const GLfloat *) &mvp);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat *) &view);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (const GLfloat *) &model);
 //        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat *) &projection);
         glUniform3fv(lightDirViewLoc, 1, (const GLfloat *) &lightDirViewNorm);
 

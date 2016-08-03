@@ -7,8 +7,9 @@
 
 #include <memory>
 
-#include "sceneBuilding.h"
+#include "constants.h"
 #include "Scene.h"
+
 
 glm::vec3 GREEN(0.0f, 1.0f, 0.0f);
 glm::vec3 RED(1.0f, 0.0f, 0.0f);
@@ -111,11 +112,12 @@ std::shared_ptr<Model> box(const float &size, const glm::vec3 &clr) {
     return model;
 }
 
+
 std::unique_ptr<Scene> buildScene() {
     auto scene = std::unique_ptr<Scene>(new Scene());
 
-    scene->add(box(10.0, GREY));
-    scene->add(cube(0.3f, GREEN));
+    scene->add(box(ROOM_SIZE, GREY));
+    scene->add(cube(0.3f, GREEN))->withRotation(glm::vec3(1.0f, 0.0f, 1.0f), 0.5f);
 
     return scene;
 }
