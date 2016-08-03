@@ -49,7 +49,7 @@ void Renderer::doRender(const float &ratio, const float &) {
 
     const int mvpLoc = shaderManager->uniformParam("MVP");
     const int viewLoc = shaderManager->uniformParam("view");
-    const int projectionLoc = shaderManager->uniformParam("projection");
+//    const int projectionLoc = shaderManager->uniformParam("projection");
     const int lightDirViewLoc = shaderManager->uniformParam("lightDirView");
 
     const unsigned int colLoc = shaderManager->attribParam("vColor");
@@ -82,7 +82,7 @@ void Renderer::doRender(const float &ratio, const float &) {
 
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, (const GLfloat *) &mvp);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat *) &view);
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat *) &projection);
+//        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat *) &projection);
         glUniform3fv(lightDirViewLoc, 1, (const GLfloat *) &lightDirViewNorm);
 
         glDrawElements(GL_TRIANGLES, mesh.getElementsSize(), GL_UNSIGNED_SHORT, 0);

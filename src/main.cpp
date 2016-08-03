@@ -17,6 +17,7 @@ int main(void) {
     if (!glfwInit())
         return -1;
 
+    glfwWindowHint(GLFW_SAMPLES, 4);
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "GDemo", NULL, NULL);
     if (!window) {

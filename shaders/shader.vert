@@ -2,7 +2,7 @@
 
 uniform mat4 MVP;
 uniform mat4 view;
-uniform mat4 projection;
+//uniform mat4 projection;
 
 uniform vec3 lightDirView;
 
