@@ -33,18 +33,8 @@ public:
         vertices.push_back(VertexData(pos, diffuse, glm::normalize(pos)));
     }
 
-    void poly(const unsigned short &p1, const unsigned short &p2, const unsigned short &p3) {
-        indices.push_back(p1);
-        indices.push_back(p2);
-        indices.push_back(p3);
-    }
-
     const std::vector<VertexData> &getVertices() const {
         return vertices;
-    }
-
-    const std::vector<unsigned short> &getIndices() const {
-        return indices;
     }
 
     const std::vector<std::shared_ptr<MoveController>> &getMoveControllers() const {
@@ -57,7 +47,6 @@ public:
 
 private:
     std::vector<VertexData> vertices;
-    std::vector<unsigned short> indices;
 
     std::vector<std::shared_ptr<MoveController>> moveControllers;
 };

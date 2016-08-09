@@ -10,6 +10,13 @@
 #include "constants.h"
 #include "Scene.h"
 
+glm::vec3 UP(0.0f, 1.0f, 0.0f);
+glm::vec3 DOWN(0.0f, -1.0f, 0.0f);
+glm::vec3 LEFT(-1.0f, 0.0f, 0.0f);
+glm::vec3 RIGHT(1.0f, 0.0f, 0.0f);
+glm::vec3 FWD(0.0f, 0.0f, 1.0f);
+glm::vec3 BKWD(0.0f, 0.0f, -1.0f);
+
 
 glm::vec3 GREEN(0.0f, 1.0f, 0.0f);
 glm::vec3 RED(1.0f, 0.0f, 0.0f);
@@ -28,14 +35,37 @@ glm::vec3 normal(const float &x, const float &y, const float &z) {
     return glm::normalize(glm::vec3(x, y, z));
 }
 
+void addSquare(const std::shared_ptr<Model> model, glm::vec3 normal, const glm::vec3 &clr, const float &hSize) {
+    auto rotation = glm::rotation(UP, normal);
+
+    model->add(rotation * pos(-hSize, hSize, -hSize), clr, normal);
+    model->add(rotation * pos(-hSize, hSize, hSize), clr, normal);
+    model->add(rotation * pos(hSize, hSize, -hSize), clr, normal);
+
+    model->add(rotation * pos(hSize, hSize, hSize), clr, normal);
+    model->add(rotation * pos(hSize, hSize, -hSize), clr, normal);
+    model->add(rotation * pos(-hSize, hSize, hSize), clr, normal);
+}
+
+void addSquareInv(const std::shared_ptr<Model> model, glm::vec3 normal, const glm::vec3 &clr, const float &hSize) {
+    auto rotation = glm::rotation(UP, normal);
+    normal = -normal;
+
+    model->add(rotation * pos(-hSize, hSize, hSize), clr, normal);
+    model->add(rotation * pos(-hSize, hSize, -hSize), clr, normal);
+    model->add(rotation * pos(hSize, hSize, -hSize), clr, normal);
+
+    model->add(rotation * pos(hSize, hSize, -hSize), clr, normal);
+    model->add(rotation * pos(hSize, hSize, hSize), clr, normal);
+    model->add(rotation * pos(-hSize, hSize, hSize), clr, normal);
+}
+
 std::shared_ptr<Model> testTriangle() {
     auto model = std::make_shared<Model>();
 
     model->add(pos(0.6f, -0.4f, 0.0f), clr(0.f, 1.f, 0.f), glm::vec3());
     model->add(pos(-0.6f, -0.4f, 0.0f), clr(1.f, 0.f, 0.f), glm::vec3());
     model->add(pos(0.f, 0.6f, 0.0f), clr(0.f, 0.f, 1.f), glm::vec3());
-
-    model->poly(0, 1, 2);
 
     return model;
 }
@@ -44,35 +74,12 @@ std::shared_ptr<Model> cube(const float &size, const glm::vec3 &clr) {
     auto model = std::make_shared<Model>();
     const float hSize = size / 2;
 
-    model->add(pos(-hSize, -hSize, hSize), clr);
-    model->add(pos(hSize, -hSize, hSize), clr);
-    model->add(pos(hSize, hSize, hSize), clr);
-    model->add(pos(-hSize, hSize, hSize), clr);
-
-    model->add(pos(-hSize, -hSize, -hSize), clr);
-    model->add(pos(hSize, -hSize, -hSize), clr);
-    model->add(pos(hSize, hSize, -hSize), clr);
-    model->add(pos(-hSize, hSize, -hSize), clr);
-
-    // front
-    model->poly(0, 1, 2);
-    model->poly(2, 3, 0);
-    // top
-    model->poly(1, 5, 6);
-    model->poly(6, 2, 1);
-    // back
-    model->poly(7, 6, 5);
-    model->poly(5, 4, 7);
-    // bottom
-    model->poly(4, 0, 3);
-    model->poly(3, 7, 4);
-    // left
-    model->poly(4, 5, 1);
-    model->poly(1, 0, 4);
-    // right
-    model->poly(3, 2, 6);
-    model->poly(6, 7, 3);
-
+    addSquare(model, UP, clr, hSize);
+    addSquare(model, DOWN, clr, hSize);
+    addSquare(model, LEFT, clr, hSize);
+    addSquare(model, RIGHT, clr, hSize);
+    addSquare(model, FWD, clr, hSize);
+    addSquare(model, BKWD, clr, hSize);
     return model;
 }
 
@@ -80,34 +87,12 @@ std::shared_ptr<Model> box(const float &size, const glm::vec3 &clr) {
     auto model = std::make_shared<Model>();
     const float hSize = size / 2;
 
-    model->add(pos(-hSize, -hSize, hSize), clr, normal(hSize, hSize, -hSize));
-    model->add(pos(hSize, -hSize, hSize), clr, normal(-hSize, hSize, -hSize));
-    model->add(pos(hSize, hSize, hSize), clr, normal(-hSize, -hSize, -hSize));
-    model->add(pos(-hSize, hSize, hSize), clr, normal(hSize, -hSize, -hSize));
-
-    model->add(pos(-hSize, -hSize, -hSize), clr, normal(hSize, hSize, hSize));
-    model->add(pos(hSize, -hSize, -hSize), clr, normal(-hSize, hSize, hSize));
-    model->add(pos(hSize, hSize, -hSize), clr, normal(-hSize, -hSize, hSize));
-    model->add(pos(-hSize, hSize, -hSize), clr, normal(hSize, -hSize, hSize));
-
-    // front
-    model->poly(1, 0, 2);
-    model->poly(3, 2, 0);
-    // top
-    model->poly(5, 1, 6);
-    model->poly(2, 6, 1);
-    // back
-    model->poly(6, 7, 5);
-    model->poly(4, 5, 7);
-    // bottom
-    model->poly(0, 4, 3);
-    model->poly(7, 3, 4);
-    // left
-    model->poly(5, 4, 1);
-    model->poly(0, 1, 4);
-    // right
-    model->poly(2, 3, 6);
-    model->poly(7, 6, 3);
+    addSquareInv(model, UP, clr, hSize);
+    addSquareInv(model, DOWN, clr, hSize);
+    addSquareInv(model, LEFT, clr, hSize);
+    addSquareInv(model, RIGHT, clr, hSize);
+    addSquareInv(model, FWD, clr, hSize);
+    addSquareInv(model, BKWD, clr, hSize);
 
     return model;
 }

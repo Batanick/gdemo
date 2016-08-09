@@ -15,17 +15,12 @@
 
 class Mesh {
 public:
-    Mesh(const unsigned int vertexBuffer, const unsigned int indexBuffer, const unsigned int elementsSize) :
+    Mesh(const unsigned int vertexBuffer, const unsigned int elementsSize) :
             vertexBuffer(vertexBuffer),
-            indexBuffer(indexBuffer),
             elementsSize(elementsSize) { }
 
     unsigned int getVertexBuffer() const {
         return vertexBuffer;
-    }
-
-    unsigned int getIndexBuffer() const {
-        return indexBuffer;
     }
 
     unsigned int getElementsSize() const {
@@ -46,8 +41,6 @@ public:
 
 private :
     const unsigned int vertexBuffer;
-    const unsigned int indexBuffer;
-
     const unsigned int elementsSize;
 
     std::vector<std::shared_ptr<MoveController>> moveControllers;

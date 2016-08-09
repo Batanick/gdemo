@@ -27,19 +27,13 @@ bool Renderer::init() {
 
 void Renderer::loadScene() {
     for (auto model : scene->getModels()) {
-        GLuint vertexBuffer, indexBuffer;
-
+        GLuint vertexBuffer;
         auto &vertices = model->getVertices();
         glGenBuffers(1, &vertexBuffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Model::VertexData), &vertices[0], GL_STATIC_DRAW);
 
-        auto &indices = model->getIndices();
-        glGenBuffers(1, &indexBuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
-
-        Mesh mesh(vertexBuffer, indexBuffer, (unsigned int) indices.size());
+        Mesh mesh(vertexBuffer, (unsigned int) vertices.size());
         mesh.setMoveControllers(model->getMoveControllers());
         meshes.push_back(mesh);
     }
@@ -73,7 +67,6 @@ void Renderer::doRender(const float &ratio, const float &timeDelta) {
         const glm::mat4 mvp = projection * view * model;
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexBuffer());
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexBuffer());
 
         glEnableVertexAttribArray(posLoc);
         glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void *) 0);
@@ -88,6 +81,6 @@ void Renderer::doRender(const float &ratio, const float &timeDelta) {
 //        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat *) &projection);
         glUniform3fv(lightDirViewLoc, 1, (const GLfloat *) &lightDirViewNorm);
 
-        glDrawElements(GL_TRIANGLES, mesh.getElementsSize(), GL_UNSIGNED_SHORT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, mesh.getElementsSize());
     }
 }
