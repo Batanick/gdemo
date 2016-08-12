@@ -3,7 +3,6 @@
 //
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Renderer.h"
@@ -33,7 +32,7 @@ void Renderer::loadScene() {
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Model::VertexData), &vertices[0], GL_STATIC_DRAW);
 
-        Mesh mesh(vertexBuffer, (unsigned int) vertices.size());
+        Mesh mesh(vertexBuffer, (unsigned int) vertices.size(), model->getInitialModel());
         mesh.setMoveControllers(model->getMoveControllers());
         meshes.push_back(mesh);
     }

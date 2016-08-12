@@ -15,5 +15,7 @@ public:
 };
 
 std::shared_ptr<MoveController> rotationController(const glm::vec3 &axis, const float speed);
+std::shared_ptr<MoveController> rotationAroundController(const glm::vec3 &axis, const float speed);
+
 
 #endif //GDEMO_MOVECONTROLLER_H

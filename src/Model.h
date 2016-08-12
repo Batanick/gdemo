@@ -41,14 +41,31 @@ public:
         return moveControllers;
     }
 
-    void withRotation(const glm::vec3 &axis, const float &speed) {
+    const glm::mat4 &getInitialModel() const {
+        return initialModel;
+    }
+
+    Model& withRotation(const glm::vec3 &axis, const float &speed) {
         moveControllers.push_back(rotationController(axis, speed));
+        return *this;
+    }
+
+    Model& withRotationAround(const glm::vec3 &axis, const float &speed) {
+        moveControllers.push_back(rotationAroundController(axis, speed));
+        return *this;
+    }
+
+    Model& move(const glm::vec3 &translate) {
+        initialModel = glm::translate(translate) * initialModel;
+        return *this;
     }
 
 private:
     std::vector<VertexData> vertices;
 
     std::vector<std::shared_ptr<MoveController>> moveControllers;
+
+    glm::mat4 initialModel;
 };
 
 

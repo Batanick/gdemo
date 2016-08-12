@@ -49,6 +49,20 @@ void Camera::onBeforeRender(GLFWwindow *const window, double deltaTime) {
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         position -= right * (float) deltaTime * CAMERA_MOVE_SPEED;
     }
+
+    //Switching polygon draw mode
+    static bool buttonUp = true;
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        if (buttonUp) {
+            GLint currentMode[2]; //front and back value
+            glGetIntegerv(GL_POLYGON_MODE, &currentMode[0]);
+            glPolygonMode(GL_FRONT_AND_BACK, currentMode[0] == GL_LINE ? GL_FILL : GL_LINE);
+            buttonUp = false;
+        }
+    }
+    else {
+        buttonUp = true;
+    }
 }
 
 glm::vec3 Camera::getRight() {

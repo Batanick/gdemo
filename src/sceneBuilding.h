@@ -15,7 +15,7 @@ glm::vec3 DOWN(0.0f, -1.0f, 0.0f);
 glm::vec3 LEFT(-1.0f, 0.0f, 0.0f);
 glm::vec3 RIGHT(1.0f, 0.0f, 0.0f);
 glm::vec3 FWD(0.0f, 0.0f, 1.0f);
-glm::vec3 BKWD(0.0f, 0.0f, -1.0f);
+glm::vec3 BWD(0.0f, 0.0f, -1.0f);
 
 
 glm::vec3 GREEN(0.0f, 1.0f, 0.0f);
@@ -70,6 +70,51 @@ std::shared_ptr<Model> testTriangle() {
     return model;
 }
 
+void subdivide(const glm::vec3 p1, const glm::vec3 p2, const glm::vec3 p3, const int &depth,
+               std::vector<glm::vec3> &result) {
+    if (depth == 0) {
+        result.push_back(p1);
+        result.push_back(p2);
+        result.push_back(p3);
+        return;
+    }
+
+    const glm::vec3 p12 = glm::normalize(p1 + p2);
+    const glm::vec3 p23 = glm::normalize(p2 + p3);
+    const glm::vec3 p31 = glm::normalize(p3 + p1);
+
+    subdivide(p1, p12, p31, depth - 1, result);
+    subdivide(p2, p23, p12, depth - 1, result);
+    subdivide(p3, p31, p23, depth - 1, result);
+    subdivide(p12, p23, p31, depth - 1, result);
+}
+
+std::shared_ptr<Model> sphere(const float &rad, const glm::vec3 &clr, const int resolution) {
+    auto model = std::make_shared<Model>();
+    std::vector<glm::vec3> vertices;
+
+    const glm::vec3 lf = glm::normalize(LEFT + FWD);
+    const glm::vec3 rf = glm::normalize(RIGHT + FWD);
+    const glm::vec3 lb = glm::normalize(LEFT + BWD);
+    const glm::vec3 rb = glm::normalize(RIGHT + BWD);
+
+    subdivide(UP, lf, rf, resolution, vertices);
+    subdivide(UP, rb, lb, resolution, vertices);
+    subdivide(UP, lb, lf, resolution, vertices);
+    subdivide(UP, rf, rb, resolution, vertices);
+
+    subdivide(lf, DOWN, rf, resolution, vertices);
+    subdivide(rb, DOWN, lb, resolution, vertices);
+    subdivide(lb, DOWN, lf, resolution, vertices);
+    subdivide(rf, DOWN, rb, resolution, vertices);
+
+    for (auto &vertex : vertices) {
+        model->add(vertex * rad, clr, glm::normalize(vertex));
+    }
+
+    return model;
+}
+
 std::shared_ptr<Model> cube(const float &size, const glm::vec3 &clr) {
     auto model = std::make_shared<Model>();
     const float hSize = size / 2;
@@ -79,7 +124,7 @@ std::shared_ptr<Model> cube(const float &size, const glm::vec3 &clr) {
     addSquare(model, LEFT, clr, hSize);
     addSquare(model, RIGHT, clr, hSize);
     addSquare(model, FWD, clr, hSize);
-    addSquare(model, BKWD, clr, hSize);
+    addSquare(model, BWD, clr, hSize);
     return model;
 }
 
@@ -92,7 +137,7 @@ std::shared_ptr<Model> box(const float &size, const glm::vec3 &clr) {
     addSquareInv(model, LEFT, clr, hSize);
     addSquareInv(model, RIGHT, clr, hSize);
     addSquareInv(model, FWD, clr, hSize);
-    addSquareInv(model, BKWD, clr, hSize);
+    addSquareInv(model, BWD, clr, hSize);
 
     return model;
 }
@@ -102,7 +147,25 @@ std::unique_ptr<Scene> buildScene() {
     auto scene = std::unique_ptr<Scene>(new Scene());
 
     scene->add(box(ROOM_SIZE, GREY));
-    scene->add(cube(0.3f, GREEN))->withRotation(glm::vec3(1.0f, 0.0f, 1.0f), 0.5f);
+
+    scene->add(cube(0.3f, GREEN))->
+            withRotation(glm::vec3(1.0f, 0.0f, 1.0f), 0.5f);
+
+    scene->add(sphere(0.2f, BLUE, 6))->
+            move(LEFT * 1.0f).
+            withRotationAround(UP, 0.3f);
+
+    scene->add(sphere(0.2f, BLUE, 6))->
+            move(RIGHT * 1.0f).
+            withRotationAround(UP, 0.3f);
+
+    scene->add(sphere(0.2f, RED, 6))->
+            move(FWD * 1.0f).
+            withRotationAround(UP, 0.3f);
+
+    scene->add(sphere(0.2f, RED, 6))->
+            move(BWD * 1.0f).
+            withRotationAround(UP, 0.3f);
 
     return scene;
 }

@@ -15,9 +15,10 @@
 
 class Mesh {
 public:
-    Mesh(const unsigned int vertexBuffer, const unsigned int elementsSize) :
+    Mesh(const unsigned int vertexBuffer, const unsigned int elementsSize, const glm::mat4 &model) :
             vertexBuffer(vertexBuffer),
-            elementsSize(elementsSize) { }
+            elementsSize(elementsSize),
+            model(model) { }
 
     unsigned int getVertexBuffer() const {
         return vertexBuffer;
