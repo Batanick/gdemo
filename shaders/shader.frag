@@ -2,13 +2,13 @@
 
 uniform vec3 lightDirView;
 uniform mat4 view;
+uniform float shininess;
 
 in vec3 fColor;
 in vec3 fNormalView;
 in vec3 posView;
 
 const vec3 specColor = vec3(1.0, 1.0, 1.0);
-const float shininess = 16.0;
 const float screenGamma = 2.2;
 
 out vec4 color;
@@ -20,7 +20,7 @@ void main()
     float lambertian = max(dot(-lightDirView, normal), 0.0);
     float specular = 0.0;
 
-    if(lambertian > 0.0) {
+    if(lambertian > 0.0 && shininess > 0.0) {
         vec3 viewDir = normalize(-posView);
 
         vec3 halfDir = normalize(-lightDirView + viewDir);

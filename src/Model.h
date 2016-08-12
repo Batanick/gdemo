@@ -45,6 +45,15 @@ public:
         return initialModel;
     }
 
+    float getShininess() const {
+        return shininess;
+    }
+
+    Model& shine(float shininess) {
+        Model::shininess = shininess;
+        return *this;
+    }
+
     Model& withRotation(const glm::vec3 &axis, const float &speed) {
         moveControllers.push_back(rotationController(axis, speed));
         return *this;
@@ -66,7 +75,7 @@ private:
     std::vector<std::shared_ptr<MoveController>> moveControllers;
 
     glm::mat4 initialModel;
+    float shininess = 0.0f;
 };
-
 
 #endif //GDEMO_MODEL_H

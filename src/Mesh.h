@@ -15,10 +15,12 @@
 
 class Mesh {
 public:
-    Mesh(const unsigned int vertexBuffer, const unsigned int elementsSize, const glm::mat4 &model) :
+    Mesh(const unsigned int vertexBuffer, const unsigned int elementsSize, const glm::mat4 &model,
+         const float shininess) :
             vertexBuffer(vertexBuffer),
             elementsSize(elementsSize),
-            model(model) { }
+            model(model),
+            shininess(shininess) { }
 
     unsigned int getVertexBuffer() const {
         return vertexBuffer;
@@ -26,6 +28,10 @@ public:
 
     unsigned int getElementsSize() const {
         return elementsSize;
+    }
+
+    float getShininess() const {
+        return shininess;
     }
 
     glm::mat4 updateTransform(const float &delta) {
@@ -43,10 +49,12 @@ public:
 private :
     const unsigned int vertexBuffer;
     const unsigned int elementsSize;
+    glm::mat4 model;
+    const float shininess;
 
     std::vector<std::shared_ptr<MoveController>> moveControllers;
 
-    glm::mat4 model;
+
 };
 
 

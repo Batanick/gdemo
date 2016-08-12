@@ -149,21 +149,26 @@ std::unique_ptr<Scene> buildScene() {
     scene->add(box(ROOM_SIZE, GREY));
 
     scene->add(cube(0.3f, GREEN))->
-            withRotation(glm::vec3(1.0f, 0.0f, 1.0f), 0.5f);
+            shine(2.0f).
+            withRotation(glm::vec3(1.0f, 0.0f, 1.0f), 0.5f).getShininess();
 
     scene->add(sphere(0.2f, BLUE, 6))->
+            shine(16.0f).
             move(LEFT * 1.0f).
             withRotationAround(UP, 0.3f);
 
     scene->add(sphere(0.2f, BLUE, 6))->
+            shine(16.0f).
             move(RIGHT * 1.0f).
             withRotationAround(UP, 0.3f);
 
     scene->add(sphere(0.2f, RED, 6))->
+            shine(16.0f).
             move(FWD * 1.0f).
             withRotationAround(UP, 0.3f);
 
     scene->add(sphere(0.2f, RED, 6))->
+            shine(16.0f).
             move(BWD * 1.0f).
             withRotationAround(UP, 0.3f);
 

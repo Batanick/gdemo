@@ -32,7 +32,7 @@ void Renderer::loadScene() {
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Model::VertexData), &vertices[0], GL_STATIC_DRAW);
 
-        Mesh mesh(vertexBuffer, (unsigned int) vertices.size(), model->getInitialModel());
+        Mesh mesh(vertexBuffer, (unsigned int) vertices.size(), model->getInitialModel(), model->getShininess());
         mesh.setMoveControllers(model->getMoveControllers());
         meshes.push_back(mesh);
     }
@@ -44,6 +44,7 @@ void Renderer::doRender(const float &ratio, const float &timeDelta) {
     const int mvpLoc = shaderManager->uniformParam("MVP");
     const int modelLoc = shaderManager->uniformParam("model");
     const int viewLoc = shaderManager->uniformParam("view");
+    const int shininess = shaderManager->uniformParam("shininess");
 //    const int projectionLoc = shaderManager->uniformParam("projection");
     const int lightDirViewLoc = shaderManager->uniformParam("lightDirView");
 
@@ -77,6 +78,7 @@ void Renderer::doRender(const float &ratio, const float &timeDelta) {
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, (const GLfloat *) &mvp);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (const GLfloat *) &view);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (const GLfloat *) &model);
+        glUniform1f(shininess, mesh.getShininess());
 //        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (const GLfloat *) &projection);
         glUniform3fv(lightDirViewLoc, 1, (const GLfloat *) &lightDirViewNorm);
 
