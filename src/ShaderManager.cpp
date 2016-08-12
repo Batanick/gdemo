@@ -3,7 +3,6 @@
 //
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <string>
 #include <fstream>
 
@@ -12,12 +11,19 @@
 
 bool printLog(GLuint obj);
 
-bool loadContent(const char *path, std::string &result);
+bool loadContent(const std::string path, std::string &result);
 
 bool ShaderManager::init() {
+    VERIFY(initShader("shader", shaderId), "Unable to load main shader", return false);
+    VERIFY(initShader("defShader", deferredShaderId), "Unable to load deferred shader", return false);
+
+    return true;
+}
+
+bool ShaderManager::initShader(const std::string fileName, unsigned int &shaderId) {
     std::string vertShader, fragShader;
-    VERIFY(loadContent("shaders/shader.vert", vertShader), "Unable to load vertex shader", return false);
-    VERIFY(loadContent("shaders/shader.frag", fragShader), "Unable to load fragment shader", return false);
+    VERIFY(loadContent("shaders/" + fileName + ".vert", vertShader), "Unable to load vertex shader", return false);
+    VERIFY(loadContent("shaders/" + fileName + ".frag", fragShader), "Unable to load fragment shader", return false);
     const char *vertChars = vertShader.c_str();
     const char *fragChars = fragShader.c_str();
 
@@ -102,7 +108,7 @@ bool printLog(GLuint obj) {
 
 #include <unistd.h>
 
-bool loadContent(const char *path, std::string &result) {
+bool loadContent(const std::string path, std::string &result) {
     std::ifstream stream(path);
     if (!stream.is_open()) {
         return false;
@@ -113,7 +119,7 @@ bool loadContent(const char *path, std::string &result) {
     while (std::getline(stream, line)) {
         result += line + "\n";
     }
-    LOG("Loading shader [%s]: \n%s", path, result.c_str());
+    LOG("Loading shader [%s]: \n%s", path.c_str(), result.c_str());
 
     return true;
 }

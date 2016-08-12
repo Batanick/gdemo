@@ -20,10 +20,17 @@ public:
         return shaderId;
     }
 
+    unsigned int getDeferredShaderId() const {
+        return deferredShaderId;
+    }
+
 private:
     unsigned int shaderId = 0;
+    unsigned int deferredShaderId = 0;
     std::map<std::string, unsigned int> attribParamsCache;
     std::map<std::string, int> uniformParamsCache;
+
+    bool initShader(const std::string fileName, unsigned int &shaderId);
 };
 
 
