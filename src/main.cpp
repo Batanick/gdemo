@@ -35,7 +35,7 @@ int main(void) {
 
     int width = 0, height = 0;
     double lastProcessTime = glfwGetTime();
-    double timeDelta = 0.0, currentTime = 0.0;
+    double timeDelta = 0.0, currentTime = 0.0, fpsPrinted = 0.0;
 
     // placing cursor to init location
     glfwGetFramebufferSize(window, &width, &height);
@@ -63,6 +63,11 @@ int main(void) {
 
         /* Poll for and process events */
         glfwPollEvents();
+
+        if (fpsPrinted + 10.0 < currentTime) { // too lazy to do properly
+            LOG("FPS: %.3f", renderer->getFpsCounter().getFps());
+            fpsPrinted = currentTime;
+        }
     }
 
     glfwDestroyWindow(window);

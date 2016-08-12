@@ -84,4 +84,6 @@ void Renderer::doRender(const float &ratio, const float &timeDelta) {
 
         glDrawArrays(GL_TRIANGLES, 0, mesh.getElementsSize());
     }
+
+    fpsCounter.onFrame();
 }

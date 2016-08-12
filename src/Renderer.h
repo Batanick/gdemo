@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "ShaderManager.h"
 #include "Mesh.h"
+#include "FpsCounter.h"
 
 class Renderer {
 public:
@@ -19,6 +20,10 @@ public:
         return camera;
     }
 
+    const FpsCounter &getFpsCounter() const {
+        return fpsCounter;
+    }
+
 private :
     std::unique_ptr<Scene> scene;
     std::unique_ptr<Camera> camera{new Camera()};
@@ -28,6 +33,8 @@ private :
 
     std::vector<Mesh> meshes;
     glm::vec3 lightDir{0.0f, -1.0f, 0.0f};
+
+    FpsCounter fpsCounter;
 };
 
 
